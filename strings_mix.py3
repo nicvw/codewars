@@ -1,5 +1,6 @@
 """
 Strings Mix
+http://www.codewars.com/kata/strings-mix/python
 
 Given two strings s1 and s2, we want to visualize how different the two strings are. We will only take into account the
 lowercase letters (a to z). First let us count the frequency of each lowercase letters in s1 and s2.
@@ -41,43 +42,19 @@ s2="Yes they are here! aaaaa fffff"
 mix(s1, s2) --> "=:aaaaaa/2:eeeee/=:fffff/1:tt/2:rr/=:hh"
 """
 import string
-from collections import defaultdict
+from collections import Counter
 
 
 def mix(s1, s2):
     store = []
     result = []
     for stringy in (s1, s2):
-        store.append(defaultdict(int))
-        for char in stringy:
-            if char in string.ascii_lowercase:
-                store[-1][char] += 1
+        store.append(Counter([x for x in stringy if x.islower()]))
     for count in range(2):
         result.append([k * v for k, v in store[count].items() if v > 1 and v >= store[(count + 1) % 2].get(k, 0)])
         result[-1].sort()
     return "/".join(
         sorted(
-            ["1:{}".format(x) for x in result[0] if x not in result[1]] + ["2:{}".format(x) for x in result[1] if x not in result[0]] + ["=:{}".format(x) for x in result
-    [0] if x in result[1]],
-            key=len,
-            reverse=True))
-
-
-def mix(s1, s2):
-    store = []
-    result = []
-    for stringy in (s1, s2):
-        store.append(defaultdict(int))
-        for char in stringy:
-            if char in string.ascii_lowercase:
-                store[-1][char] += 1
-    for count in range(2):
-        result.append([k * v for k, v in store[count].items() if v > store[(count + 1) % 2].get(k, 1)])
-        result[-1].sort()
-    result.append(list(set(result[0]) & set(result[1])))
-    result[-1].sort()
-    return "/".join(
-        sorted(
-            ["1:{}".format(x) for x in result[0]] + ["2:{}".format(x) for x in result[1]] + ["=:{}".format(x) for x in result[2]],
+            ["1:{}".format(x) for x in result[0] if x not in result[1]] + ["2:{}".format(x) for x in result[1] if x not in result[0]] + ["=:{}".format(x) for x in result[0] if x in result[1]],
             key=len,
             reverse=True))
